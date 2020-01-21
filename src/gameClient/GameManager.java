@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
 import Server.Game_Server;
+
 import Server.game_service;
 import algorithms.Graph_Algo;
 import dataStructure.DGraph;
@@ -48,7 +49,32 @@ public class GameManager
 		mg = _mg;
 		mg.playManual();
 }
-	
+	public int chooseTimeSleep (int scenario_num)  
+	{
+		
+		if (scenario_num==0) {
+			return 35; //this is thread!!
+			}
+		if (scenario_num==1) {
+			return 40;
+			
+			}
+			if (scenario_num==3) {
+				return 40; //this is thread!!
+			}
+			if (scenario_num==5) {
+				return 203; //lo hezlachti liftor
+			}
+			
+			if (scenario_num==11) {
+				
+				return 9; //this is thread!!
+			}
+			
+		
+			return 0;
+		
+	}
 	
 	
 	
@@ -56,6 +82,11 @@ public class GameManager
 	
 //*******init Objects*****************
 	
+	
+	/**
+	 * Init List of Fruit
+	 * @return
+	 */
 	public ArrayList<Fruit> GetFruitList ()
 	{
 
@@ -74,12 +105,17 @@ public class GameManager
 			String sFruit = fruit_iter.next();
 			Fruit f = new Fruit();
 			f.initFruit(sFruit);
-//			findFruitEdge(f,gr);
 			FruitsList.add(f);
 		}
 		return FruitsList;
 	}
 	
+	/**
+	 * Init Robots
+	 * @param game - data from server
+	 * @param _gr - current graph
+	 * @return robot list
+	 */
 	public ArrayList<Robot> initRobots(game_service game, graph _gr)
 	{
 		this.gr = _gr;

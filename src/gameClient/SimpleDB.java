@@ -4,6 +4,10 @@
 	import java.sql.ResultSet;
 	import java.sql.SQLException;
 	import java.sql.Statement;
+
+import Server.Game_Server;
+import Server.game_service;
+import dataStructure.DGraph;
 /**
  * This class represents a simple example of using MySQL Data-Base.
  * Use this example for writing solution. 
@@ -20,7 +24,19 @@ public class SimpleDB {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-			int id1 = 999;  // "dummy existing ID  
+			
+		game_service game = Game_Server.getServer(0); // you have [0,23] games
+		String g = game.getGraph();
+		//OOP_DGraph gg = new OOP_DGraph();
+		DGraph gg = new DGraph();
+		MyGameGUI mg = new MyGameGUI();
+		gg.init(g);
+		mg.initGUI();
+		///** before fuchs
+		
+		Game_Server.login(205464712);	
+		
+		int id1 = 205464712;  // "dummy existing ID  	
 			int level = 0;
 			allUsers();
 			printLog();
