@@ -32,22 +32,20 @@ public class SimpleDB {
 		//OOP_DGraph gg = new OOP_DGraph();
 		DGraph gg = new DGraph();
 		MyGameGUI mg = new MyGameGUI();
-		allUsers();
-		printLog();
+
 		gg.init(g);
 		mg.initGUI();
-		
-		
-			
+		String kml = getKML(205464712,20);
 
-			int id1 = 205464712;  // "dummy existing ID  	
-			int level = 0;
-			allUsers();
-			printLog();
-			String kml = getKML(id1,20);
-			System.out.println("hello");
-			System.out.println("***** KML file example: ******");
-			System.out.println(kml);
+		System.out.println("hello");
+		System.out.println("***** KML file example: ******");
+		System.out.println(kml);
+		System.out.println("hello");
+
+
+//			allUsers();
+//			printLog();
+			//String kml = getKML(id1,20);
 		}
 	/** simply prints all the games as played by the users (in the database).
 	 * 

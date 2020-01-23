@@ -726,7 +726,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
 		// frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
-		frame.setTitle("***-SuperMario Game By Ginton & Fucesi-***");
+		frame.setTitle("***-SuperMario Game By Ginton & Fuchs-***");
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
 		frame.requestFocusInWindow();
@@ -2081,7 +2081,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		StdDraw.text(0.8, 0.8, "white text");
 	}
 	
-
+	/**
+	 * return the current level you the certain user is stay
+	 * @return
+	 */
 	public int GetCurrentLevel()
 	{
 		int [] need_moves = {290,580,0,580,0,500,0,0,0,580,0,580,0,580,0,0,290,0,0,580,290,0,0,1140};
@@ -2116,7 +2119,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 }
 	
 	
-
+	/**
+	 * calculate and return what rank are you in the current level
+	 * @param level
+	 * @return the rank
+	 */
 	public int RankClass (int level)   
 	{
 		int myScore = GetBestScore(level);
@@ -2215,7 +2222,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 	
 	
-	
+	/**
+	 * Get your lligal high score in the certain level
+	 * @param level
+	 * @return the score
+	 */
 	public int GetBestScore (int level)   
 	{
 //		int [] levels = new int [11]; //{0,1,3,5,9,11,13,16,19,20,23}
@@ -2318,7 +2329,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	
 	
 	
-	
+
 	
 	
 }

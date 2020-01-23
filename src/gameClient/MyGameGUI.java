@@ -419,12 +419,11 @@ public class MyGameGUI implements ActionListener, Serializable
 				int kml_num = Integer.parseInt(numKML);
 				if (kml_num==1)
 				{
-				//this.kml.CreatFile();
 				
+					
 				this.kml.CreatFile(""+scenario_num);
 				String kmlFile =  kmlStr(""+scenario_num);
-				game.sendKML(kmlFile);
-				
+				game.sendKML(kmlFile); 
 				
 				}
 				}
@@ -442,26 +441,12 @@ public class MyGameGUI implements ActionListener, Serializable
 		}
 	}
 
-	private String kmlStr(String string) 
-	{
-		String st=""; 
-		try {
-			File file = new File(/*C:\\Users\\USER\\eclipse-workspace\\Ex4\\" +*/ string + ".kml");
-			BufferedReader br = new BufferedReader(new FileReader(file)); 
+	
+	
 
-			String str;
-			while ((str = br.readLine()) != null) 
-			{
-				st+=str+"\n"; 
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		//change
-		System.out.println(st);
-		return st;
-	}
+	
+	
+
 
 	/**
 	 * Helper funtion to the main ManualMode Fuction - The Moving
@@ -677,6 +662,7 @@ public class MyGameGUI implements ActionListener, Serializable
 				String kmlFile =  kmlStr(""+scenario_num);
 				game.sendKML(kmlFile);
 				
+				
 				}
 			}
 
@@ -691,6 +677,37 @@ public class MyGameGUI implements ActionListener, Serializable
 			e.printStackTrace();
 		}
 	}
+	
+	
+	/**
+	 * Convert kml file to kml's string, fir sendind to the server
+	 * @param string
+	 * @return
+	 */
+	private String kmlStr(String string) 
+	{
+		String st=""; 
+		try {
+			File file = new File(/*C:\\Users\\USER\\eclipse-workspace\\Ex4\\" +*/ string + ".kml");
+			BufferedReader br = new BufferedReader(new FileReader(file)); 
+
+			String str;
+			while ((str = br.readLine()) != null) 
+			{
+				//st+=str+"\n"; 
+				st+=str;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		//change
+		System.out.println(st);
+		return st;
+	}
+	
+	
+	
 	
 	/**
 	 * Helper funtion to the main AutoMode Fuction - The Moving
@@ -711,13 +728,7 @@ public class MyGameGUI implements ActionListener, Serializable
 			double dist = Double.MAX_VALUE;
 			for (Fruit f : FruitsList) 
 			{
-//				if (f.getEdge().getSrc()>39&&path39 == true) {
-//					
-//				}
-//				if (f.getEdge().getSrc()>39&&path39 == false) {
-//					
-//					path39 = true;
-//				}
+
 				
 				double shortDist = Double.MAX_VALUE;
 				if (tempRob.getVertex().getKey() !=  f.getEdge().getSrc())

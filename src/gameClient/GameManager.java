@@ -19,7 +19,11 @@ import dataStructure.Robot;
 import dataStructure.graph;
 import dataStructure.node_data;
 import utils.StdDraw;
-
+/**
+ * class that manngae the whole game
+ * @author Ginton and Meir
+ *
+ */
 public class GameManager 
 {
 	static MyGameGUI mg;
@@ -33,7 +37,8 @@ public class GameManager
 		game_= game;
 		
 	}
-
+	
+//*********Start , Auto ,Manual************8
 	public static void StartGame () 
 {
 		MyGameGUI mg = new MyGameGUI();
@@ -49,53 +54,78 @@ public class GameManager
 		mg = _mg;
 		mg.playManual();
 }
-	public int chooseTimeSleep (int scenario_num)  
-	{
+
+/**
+ * Helper- give the specfic sleep time to every snceario
+ * @param scenario_num - level number
+ * @return
+ */
+public int chooseTimeSleep (int scenario_num)  
+{
 		
-		if (scenario_num==0) {
-			return 35; //this is thread!!
-			}
-		if (scenario_num==1) {
+		if (scenario_num==0) 
+		{
+			return 35; 
+		}
+		if (scenario_num==1) 
+		{
 			return 40;
 			
-			}
-			if (scenario_num==3) {
-				return 40; //this is thread!!
-			}
-			if (scenario_num==5) {
-				return 105; //lo hezlachti liftor
-			}
+		}
 			
-			if (scenario_num==9) {
-				return 85; //this is thread!!
-			}
-			if (scenario_num==11) {
+		if (scenario_num==3) 
+		{
+			return 40; 
+		}
+			
+		if (scenario_num==5) 
+		{
+			return 105; 
+		}
+			
+		if (scenario_num==9) 
+		{
+			return 85; 
+		}
+			
+		if (scenario_num==11) 
+		{
 				
-				return 100; //this is thread!!
-			}
-			if (scenario_num==13) {
+			return 100; 
+		}
+			
+		if (scenario_num==13) 
+		{
 				
-				return 100; //this is thread!!
-			}
-			if (scenario_num==16) {
+			return 100; 
+		}
+			
+		if (scenario_num==16) 
+		{
 				
-				return 100; //this is thread!!
-			}
-			if (scenario_num==19) {
+			return 100; 
+		}
+			
+		if (scenario_num==19) 
+		{
 				
-				return 110; //this is thread!!
-			}
-	if (scenario_num==20) {
-				
-				return 99; //this is thread!!
-			}
+			return 110; 
+		}
 	
-	if (scenario_num==23) {
+		if (scenario_num==20) 
+		{
+				
+			return 99; 
+		}
+	
+	
+		if (scenario_num==23) 
+		{
 		
-		return 35; //this is thread!!
-	}
+		return 35; 
+		}
 		
-			return 0;
+		return 0;
 		
 	}
 
