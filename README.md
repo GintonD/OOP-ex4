@@ -3,8 +3,9 @@
 (https://www.youtube.com/watch?v=jh4WLS1RUD8")
 
 #            Info
+This project is Extention of OOp-ex3 with DB
 
-OOP- Ex3 is a Game. The main goal is to collect as much fruits you can "eat", you can do it by two ways:
+OOP- Ex4 is a Game. The main goal is to collect as much fruits you can "eat", you can do it by two ways:
 - Manual mode
 - Auto mode
 
@@ -42,3 +43,9 @@ after that, you need to do is to decide by click on screen which robot you want.
 
 At the end of each level you can save your own result in a kml file.
 If you want to save press 1.
+
+##    DB sql
+
+Insert your ID into the game using the window
+
+The game server allows connecting to the server for taking your data ,Information that lets you know your best results, and your results in relation to other players in the game 
