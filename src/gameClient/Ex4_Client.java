@@ -34,7 +34,8 @@ import oop_utils.OOP_Point3D;
 *
 */
 public class Ex4_Client implements Runnable{
-	public static void main(String[] a) {
+	public static void main(String[] a) 
+	{
 		Thread client = new Thread(new Ex4_Client());
 		client.start();
 	}

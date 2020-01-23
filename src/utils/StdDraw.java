@@ -62,7 +62,11 @@ import java.io.IOException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.NoSuchElementException;
@@ -79,7 +83,9 @@ import javax.swing.KeyStroke;
 
 import dataStructure.graph;
 import gameClient.GameManager;
+import gameClient.MyDB;
 import gameClient.MyGameGUI;
+import gameClient.SimpleDB;
 import utils.StdDraw;
 
 /**
@@ -486,11 +492,11 @@ import utils.StdDraw;
  *  @author Kevin Wayne
  */
 public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
-	
+	// field
 	static GameManager gm;
 	static MyGameGUI g;
 	static boolean isPaint = false;
-
+	MyDB db;
 	/**
 	 *  The color black.
 	 */
@@ -737,7 +743,20 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		Auto.addActionListener(std);
 		Game.add(Auto);
 		Game.add(manual);
-		
+		JMenu details = new JMenu("Details");
+		menuBar.add(details);
+		JMenuItem curr = new JMenuItem("Current Level");
+		curr.addActionListener(std);
+		JMenuItem Amu = new JMenuItem("Amount of Games");
+		Amu.addActionListener(std);
+		details.add(curr);
+		details.add(Amu);
+		JMenuItem best = new JMenuItem("Best Scores");
+		best.addActionListener(std);
+		JMenuItem rank = new JMenuItem("Rank by Class");
+		rank.addActionListener(std);
+		details.add(best);
+		details.add(rank);
 		
 		
 		return menuBar;
@@ -1733,6 +1752,42 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		threadPlayAuto();
 
 	}
+	
+	
+	if(str.equals("Current Level")) 
+	{
+
+		JFrame input = new JFrame();
+		String level = JOptionPane.showInputDialog(input, "Enter Scenario Number:\n(Between 0-23) ");
+		int scenario_num = Integer.parseInt(level);
+		int score = GetLevelScore(scenario_num);
+		JOptionPane.showMessageDialog(null, "The Current Level is :" + score, "Level", JOptionPane.INFORMATION_MESSAGE, null);
+	}
+	
+	if(str.equals("Amount of Games")) 
+	{
+		int num_game = MyDB.getNumOfGames();
+		JOptionPane.showMessageDialog(null, "Amount of Games I Played is:" + num_game, "Games", JOptionPane.INFORMATION_MESSAGE, null);
+	}
+	
+	if(str.equals("Best Scores")) 
+	{
+
+			int bestScore = GetBestScore();
+	
+		JOptionPane.showMessageDialog(null, "My Best Scores :\n " + bestScore, "BST Score" , JOptionPane.INFORMATION_MESSAGE, null);
+	}
+	
+	if(str.equals("Rank by Class")) 
+	{
+		JFrame input = new JFrame();
+
+		String level = JOptionPane.showInputDialog(input, "Enter Scenario Number: for to see your rank \n(Between 0-23) ");
+		int scenario_num = Integer.parseInt(level);
+		int rank = RankClass(scenario_num);
+		
+		JOptionPane.showMessageDialog(null, "My Ranks in the Class :\n " +rank, "Rank", JOptionPane.INFORMATION_MESSAGE, null);
+	}
 	}
 	//		}
 	//
@@ -2021,4 +2076,139 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		StdDraw.setPenColor(StdDraw.WHITE);
 		StdDraw.text(0.8, 0.8, "white text");
 	}
+	//DB try to change to MyDB
+	public int RankClass (int level)   {
+		int myScore = GetLevelScore(level);
+		int rank=1;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection connection = DriverManager.getConnection(SimpleDB.jdbcUrl, SimpleDB.jdbcUser,
+					SimpleDB.jdbcUserPassword);
+			Statement statement = connection.createStatement();
+			String allCustomersQuery = "SELECT * FROM Logs;";
+			ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+		
+			while (resultSet.next()) {
+
+		
+		if (resultSet.getInt("UserID") != 205464712 && resultSet.getInt("UserID") != 205464712) {
+			if (resultSet.getInt("levelID") == level)
+				if (resultSet.getInt("score")>myScore)
+					rank++;
+		}
+		}
+			resultSet.close();
+			statement.close();
+			connection.close();
+		} catch (SQLException sqle) {
+			System.out.println("SQLException: " + sqle.getMessage());
+			System.out.println("Vendor Error: " + sqle.getErrorCode());
+		
+		} 
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+			return rank;
+	}
+	public int GetLevelScore (int level)   {
+//		int [] levels = new int [11]; //{0,1,3,5,9,11,13,16,19,20,23}
+		int max=0;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection connection = DriverManager.getConnection(SimpleDB.jdbcUrl, SimpleDB.jdbcUser,
+					SimpleDB.jdbcUserPassword);
+			Statement statement = connection.createStatement();
+			String allCustomersQuery = "SELECT * FROM Logs;";
+			ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+		
+		
+		
+		
+		while (resultSet.next()) {
+			//System.out.println("id user:"+resultSet.getInt("UserID")+" "+"level="+resultSet.getInt("levelID")+" score:"+resultSet.getInt("score"));
+//		int score =resultSet.getInt("score") ; 
+			if (resultSet.getInt("UserID") == 205464712 || resultSet.getInt("UserID") == 205464712) {
+//				int scanrio = resultSet.getInt("levelID") ;
+//				int score =resultSet.getInt("score") ; 
+				if (resultSet.getInt("levelID") == level)
+				if (resultSet.getInt("score")>max)
+					max = resultSet.getInt("score");
+			}
+		}
+		
+		resultSet.close();
+		statement.close();
+		connection.close();
+	} catch (SQLException sqle) {
+		System.out.println("SQLException: " + sqle.getMessage());
+		System.out.println("Vendor Error: " + sqle.getErrorCode());
+	
+	} 
+	catch (ClassNotFoundException e) {
+		e.printStackTrace();
+	}
+		
+		
+//				if (scanrio == 0&&resultSet.getInt("moves") <= 290
+//						&& score >= 145){
+//				
+//				
+//					if (levels[0] < score)
+//					levels[0] = score;
+//			
+//	}
+	return max;		
+	}
+	
+	public int GetBestScore ()   {
+		int bestScore=0;	
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection connection = DriverManager.getConnection(SimpleDB.jdbcUrl, SimpleDB.jdbcUser,
+					SimpleDB.jdbcUserPassword);
+			Statement statement = connection.createStatement();
+			String allCustomersQuery = "SELECT * FROM Logs;";
+			ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+//		int [] levels = new int [11]; //{0,1,3,5,9,11,13,16,19,20,23}
+//		while (resultSet.next()) {
+//			
+//		int score =resultSet.getInt("score") ; 
+//			if (resultSet.getInt("UserID") == id_meir || resultSet.getInt("UserID") == id_Ginton) {
+//				int scanrio = resultSet.getInt("levelID") ;
+//				if (scanrio == 0&&resultSet.getInt("moves") <= 290
+//						&& score >= 145){
+//				
+//				
+//					if (levels[0] < score)
+//					levels[0] = score;
+//			
+//	}
+		while (resultSet.next()) {
+			int score =resultSet.getInt("score") ; 
+			if (resultSet.getInt("UserID") == 205464712 || resultSet.getInt("UserID") == 205464712) 
+				if (score>bestScore) {
+					bestScore = score;
+				
+			}
+		}
+		resultSet.close();
+		statement.close();
+		connection.close();
+	} catch (SQLException sqle) {
+		System.out.println("SQLException: " + sqle.getMessage());
+		System.out.println("Vendor Error: " + sqle.getErrorCode());
+	
+	} 
+	catch (ClassNotFoundException e) {
+		e.printStackTrace();
+	}
+				return bestScore;
+}
+	
+	
+	
+	
+	
+	
+	
 }

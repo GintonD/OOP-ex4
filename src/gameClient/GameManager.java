@@ -63,19 +63,42 @@ public class GameManager
 				return 40; //this is thread!!
 			}
 			if (scenario_num==5) {
-				return 203; //lo hezlachti liftor
+				return 105; //lo hezlachti liftor
 			}
 			
+			if (scenario_num==9) {
+				return 85; //this is thread!!
+			}
 			if (scenario_num==11) {
 				
-				return 9; //this is thread!!
+				return 100; //this is thread!!
 			}
-			
+			if (scenario_num==13) {
+				
+				return 100; //this is thread!!
+			}
+			if (scenario_num==16) {
+				
+				return 100; //this is thread!!
+			}
+			if (scenario_num==19) {
+				
+				return 110; //this is thread!!
+			}
+	if (scenario_num==20) {
+				
+				return 99; //this is thread!!
+			}
+	
+	if (scenario_num==23) {
+		
+		return 35; //this is thread!!
+	}
 		
 			return 0;
 		
 	}
-	
+
 	
 	
 

@@ -37,7 +37,7 @@ public class SimpleGameClient {
 		test1();}
 	public static void test1() 
 	{
-		int scenario_num = 2;
+		int scenario_num = 0;
 		game_service game = Game_Server.getServer(scenario_num); // you have [0,23] games
 		String g = game.getGraph();
 		
@@ -50,8 +50,7 @@ public class SimpleGameClient {
 		//mg.setVisible(true);
 		
 //		
-//		String info = game.toString();
-//		
+//		String info = game.toString();+//		
 //		JSONObject line;
 //		try {
 //			line = new JSONObject(info);

@@ -112,12 +112,13 @@ public class KML_Logger
 
 	/**
 	 * Generate the collected data to kml file.
+	 * @param NumGame 
 	 */
-	public void CreatFile() 
+	public void CreatFile(String NumGame) 
 	{
 		try {
-		    k.marshal(new File("KmlRun.kml"));
-		    System.out.println("create");
+		    k.marshal(new File(NumGame+".kml"));
+		    System.out.println("create: "+NumGame+".kml");
 			}
 
 		catch (Exception e)

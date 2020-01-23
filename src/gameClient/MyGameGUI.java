@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -36,12 +39,13 @@ import utils.StdDraw;
 
 public class MyGameGUI implements ActionListener, Serializable
 {
-	private final double EPSILON = 0.0001;
+	private final double EPSILON = 0.0000001;
 	private static DecimalFormat df2 = new DecimalFormat("#.###");
 	game_service game;
 	ArrayList<Fruit> FruitsList;
 	ArrayList<Robot> RobotsList;
 	int scenario_num;
+	int id=0;
 	graph gr;
 	KML_Logger kml;
 	Graph_Algo GrAl = new Graph_Algo();
@@ -55,6 +59,7 @@ public class MyGameGUI implements ActionListener, Serializable
 	Robot r12 = null;
 	boolean robots = true;
 	int moveRobot;
+	int score;
 	
 	static int robotChoosen=0;
 //************Constructors*****************************
@@ -151,7 +156,7 @@ public class MyGameGUI implements ActionListener, Serializable
 		StdDraw.text(max_x-0.0001,min_y+0.0001,"00:" + game.timeToEnd()/1000);
 		
 		//extract from json and draw the score
-		int score=0;
+		/* int*/ score=0;
 		try 
 		{
 			JSONObject object;
@@ -413,7 +418,13 @@ public class MyGameGUI implements ActionListener, Serializable
 				String numKML = JOptionPane.showInputDialog(inputKML, "Enter 1 for create KML ");
 				int kml_num = Integer.parseInt(numKML);
 				if (kml_num==1)
-				this.kml.CreatFile();
+				{
+				//this.kml.CreatFile();
+				
+				this.kml.CreatFile(""+scenario_num);
+				String kmlFile =  kmlStr(""+scenario_num);
+				game.sendKML(kmlFile);
+				}
 				}
 			
 			//the scenario is not exist throw error
@@ -429,7 +440,27 @@ public class MyGameGUI implements ActionListener, Serializable
 		}
 	}
 
-	
+	private String kmlStr(String string) 
+	{
+		String st=""; 
+		try {
+			File file = new File("C:\\Users\\USER\\eclipse-workspace\\Ex4\\" + string + ".kml");
+			BufferedReader br = new BufferedReader(new FileReader(file)); 
+
+			String str;
+			while ((str = br.readLine()) != null) 
+			{
+				st+=str+"\n"; 
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		//change
+		System.out.println(st);
+		return st;
+	}
+
 	/**
 	 * Helper funtion to the main ManualMode Fuction - The Moving
 	 * @param game - data from the server
@@ -542,6 +573,11 @@ public class MyGameGUI implements ActionListener, Serializable
 		kml = new KML_Logger();
 		try
 		{
+			//choose id number
+			JFrame jid = new JFrame();
+			String ids = JOptionPane.showInputDialog( jid, "Enter ID Number:");
+			id = Integer.parseInt(ids);
+			Game_Server.login(id);	
 			//choose scenario number
 			JFrame input = new JFrame();
 			String num = JOptionPane.showInputDialog( input, "Enter Scenario Number:\n(Between 0-23) ");
@@ -603,6 +639,11 @@ public class MyGameGUI implements ActionListener, Serializable
 				
 				paint(game);
 				StdDraw.pause(50);
+				for (Robot tempRob : RobotsList) {
+					if (tempRob.getId()==1)
+						tempRob.setSrc(3);
+				}
+				
 				game.startGame();
 				
 				Thread.sleep(10);
@@ -628,7 +669,12 @@ public class MyGameGUI implements ActionListener, Serializable
 				String numKML = JOptionPane.showInputDialog(inputKML, "Enter 1 for create KML ");
 				int kml_num = Integer.parseInt(numKML);
 				if (kml_num==1)
-				this.kml.CreatFile();
+				{
+				//this.kml.CreatFile();
+				this.kml.CreatFile(""+scenario_num);
+				String kmlFile =  kmlStr(""+scenario_num);
+				game.sendKML(kmlFile);
+				}
 			}
 
 			//the scenario is not exist throw error
@@ -658,10 +704,25 @@ public class MyGameGUI implements ActionListener, Serializable
 		//go over all the robots and check what is the closest fruit to current robot and reset his path
 		for (Robot  tempRob : RobotsList) 
 		{
+			boolean path39 = true; 
 			double dist = Double.MAX_VALUE;
 			for (Fruit f : FruitsList) 
 			{
-				double shortDist = a.shortestPathDist(tempRob.getVertex().getKey(), f.getEdge().getSrc())+f.getEdge().getWeight();
+//				if (f.getEdge().getSrc()>39&&path39 == true) {
+//					
+//				}
+//				if (f.getEdge().getSrc()>39&&path39 == false) {
+//					
+//					path39 = true;
+//				}
+				
+				double shortDist = Double.MAX_VALUE;
+				if (tempRob.getVertex().getKey() !=  f.getEdge().getSrc())
+				 shortDist = a.shortestPathDist(tempRob.getVertex().getKey(), f.getEdge().getSrc())+
+						f.getEdge().getWeight();
+				else
+					 shortDist = a.shortestPathDist(tempRob.getVertex().getKey(), f.getEdge().getDest())+
+						f.getEdge().getWeight();
 				if(dist>shortDist&&(!f.getVisited())) 
 				{
 					dist =shortDist;
@@ -683,21 +744,25 @@ public class MyGameGUI implements ActionListener, Serializable
 
 		for (Robot roby: RobotsList) 
 			{
-				while(roby.getPath().size() != 0) 
+				while(roby.getPath().size() != 0) // run on the list of robot
 				{
 
 					game.chooseNextEdge(roby.getId(), roby.getPath().get(0).getKey());
 					
-					
-					int TimeToSleep = gm.chooseTimeSleep(scenario_num);
-					Thread.sleep(TimeToSleep); //this is thread!!
-	 
-					if (timeLeft-game.timeToEnd()>250)
-					{
-					game.move();
-					timeLeft = game.timeToEnd();	
-					}
 					roby.getPath().remove(0);
+				}
+				
+				// go to sleep here
+				int TimeToSleep = gm.chooseTimeSleep(scenario_num);
+				
+				Thread.sleep(TimeToSleep); //this is thread!!{
+				
+//				else if ((game.timeToEnd()<11500)&& (game.timeToEnd()>5000))
+//					Thread.sleep(23);
+				if (timeLeft-game.timeToEnd()>50)
+				{
+				game.move();
+				timeLeft = game.timeToEnd();	
 				}
 			}	
 //		}
@@ -716,6 +781,9 @@ public class MyGameGUI implements ActionListener, Serializable
 				node_data n = gr.getNode(f.getEdge().getSrc());
 				game.addRobot(n.getKey());
 				Robot r = new Robot(check, n.getLocation(), 1 , n , gr);
+				//
+				
+				//
 				RobotsList.add(r);
 				r.UpdateGraph(gr);
 				f.setVisited(true);

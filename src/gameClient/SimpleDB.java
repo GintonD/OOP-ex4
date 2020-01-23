@@ -23,32 +23,39 @@ public class SimpleDB {
 	 * Simple main for demonstrating the use of the Data-base
 	 * @param args
 	 */
-	public static void main(String[] args) {
-			
+	public static void main(String[] args) 
+	{
+
+		Game_Server.login(205464712);	
 		game_service game = Game_Server.getServer(0); // you have [0,23] games
 		String g = game.getGraph();
 		//OOP_DGraph gg = new OOP_DGraph();
 		DGraph gg = new DGraph();
 		MyGameGUI mg = new MyGameGUI();
+		allUsers();
+		printLog();
 		gg.init(g);
 		mg.initGUI();
-		///** before fuchs
 		
-		Game_Server.login(205464712);	
 		
-		int id1 = 205464712;  // "dummy existing ID  	
+			
+
+			int id1 = 205464712;  // "dummy existing ID  	
 			int level = 0;
 			allUsers();
 			printLog();
-			String kml = getKML(id1,level);
+			String kml = getKML(id1,20);
+			System.out.println("hello");
 			System.out.println("***** KML file example: ******");
 			System.out.println(kml);
 		}
 	/** simply prints all the games as played by the users (in the database).
 	 * 
 	 */
-		public static void printLog() {
-			try {
+		public static void printLog() 
+		{
+			try 
+			{
 				Class.forName("com.mysql.jdbc.Driver");
 				Connection connection = 
 						DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
@@ -65,11 +72,13 @@ public class SimpleDB {
 				connection.close();		
 			}
 			
-			catch (SQLException sqle) {
+			catch (SQLException sqle)
+			{
 				System.out.println("SQLException: " + sqle.getMessage());
 				System.out.println("Vendor Error: " + sqle.getErrorCode());
 			}
-			catch (ClassNotFoundException e) {
+			catch (ClassNotFoundException e)
+			{
 				e.printStackTrace();
 			}
 		}
@@ -92,26 +101,32 @@ public class SimpleDB {
 						ans = resultSet.getString("kml_"+level);
 					}
 				}
-				catch (SQLException sqle) {
+				catch (SQLException sqle) 
+				{
 					System.out.println("SQLException: " + sqle.getMessage());
 					System.out.println("Vendor Error: " + sqle.getErrorCode());
 				}
 				
-				catch (ClassNotFoundException e) {
+				catch (ClassNotFoundException e) 
+				{
 					e.printStackTrace();
 				}
 				return ans;
 			}
-		public static int allUsers() {
+			
+		public static int allUsers() 
+		{
 			int ans = 0;
 			String allCustomersQuery = "SELECT * FROM Users;";
-			try {
+			try 
+			{
 				Class.forName("com.mysql.jdbc.Driver");
 				Connection connection = 
 						DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);		
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery(allCustomersQuery);
-				while(resultSet.next()) {
+				while(resultSet.next()) 
+				{
 					System.out.println("Id: " + resultSet.getInt("UserID"));
 					ans++;
 				}
