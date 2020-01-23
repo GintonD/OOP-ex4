@@ -67,6 +67,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.NoSuchElementException;
@@ -1757,11 +1758,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	if(str.equals("Current Level")) 
 	{
 
-		JFrame input = new JFrame();
-		String level = JOptionPane.showInputDialog(input, "Enter Scenario Number:\n(Between 0-23) ");
-		int scenario_num = Integer.parseInt(level);
-		int score = GetLevelScore(scenario_num);
-		JOptionPane.showMessageDialog(null, "The Current Level is :" + score, "Level", JOptionPane.INFORMATION_MESSAGE, null);
+
+		int curr = GetCurrentLevel();
+		JOptionPane.showMessageDialog(null, "The Current Level is :" + curr, "Level", JOptionPane.INFORMATION_MESSAGE, null);
 	}
 	
 	if(str.equals("Amount of Games")) 
@@ -1772,8 +1771,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	
 	if(str.equals("Best Scores")) 
 	{
+		JFrame input = new JFrame();
+		String level = JOptionPane.showInputDialog(input, "Enter Scenario Number:\n(Between 0-23) ");
+		int scenario_num = Integer.parseInt(level);
 
-			int bestScore = GetBestScore();
+			int bestScore = GetBestScore(scenario_num);
 	
 		JOptionPane.showMessageDialog(null, "My Best Scores :\n " + bestScore, "BST Score" , JOptionPane.INFORMATION_MESSAGE, null);
 	}
@@ -1789,6 +1791,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		JOptionPane.showMessageDialog(null, "My Ranks in the Class :\n " +rank, "Rank", JOptionPane.INFORMATION_MESSAGE, null);
 	}
 	}
+
+
 	//		}
 	//
 	//		if(str.equals("Draw graph")) {
@@ -2076,9 +2080,49 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		StdDraw.setPenColor(StdDraw.WHITE);
 		StdDraw.text(0.8, 0.8, "white text");
 	}
-	//DB try to change to MyDB
-	public int RankClass (int level)   {
-		int myScore = GetLevelScore(level);
+	
+
+	public int GetCurrentLevel()
+	{
+		int [] need_moves = {290,580,0,580,0,500,0,0,0,580,0,580,0,580,0,0,290,0,0,580,290,0,0,1140};
+		int [] need_grade = {145,450,0,720,0,570,0,0,0,510,0,1050,0,310,0,0,235,0,0,250,200,0,0,1000};
+		int max_level=0;
+	
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection connection = DriverManager.getConnection(SimpleDB.jdbcUrl, SimpleDB.jdbcUser,
+					SimpleDB.jdbcUserPassword);
+			Statement statement = connection.createStatement();
+			String allCustomersQuery = "SELECT * FROM Logs;";
+			ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+			while (resultSet.next()) {
+			if ((resultSet.getInt("UserID") ==g.GetId()/* 205464712*/) && (resultSet.getInt("levelID") > max_level))
+				if(resultSet.getInt("score")>= need_grade[resultSet.getInt("levelID")] && (resultSet.getInt("moves")<=need_moves[resultSet.getInt("levelID")]))
+					max_level=resultSet.getInt("levelID");
+			}
+		
+	} catch (SQLException sqle) {
+		System.out.println("SQLException: " + sqle.getMessage());
+		System.out.println("Vendor Error: " + sqle.getErrorCode());
+	
+	} 
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+				
+			
+		return max_level;
+}
+	
+	
+
+	public int RankClass (int level)   
+	{
+		int myScore = GetBestScore(level);
+		
+		HashMap<Integer, Integer> id_class	= new HashMap<Integer, Integer>();
+
 		int rank=1;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -2089,18 +2133,77 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			ResultSet resultSet = statement.executeQuery(allCustomersQuery);
 		
 			while (resultSet.next()) {
-
+				
 		
-		if (resultSet.getInt("UserID") != 205464712 && resultSet.getInt("UserID") != 205464712) {
+		if (resultSet.getInt("UserID") != g.GetId() && resultSet.getInt("UserID") !=203965884) {
 			if (resultSet.getInt("levelID") == level)
+				
+			switch (level) {
+			
+			case 0:
+				if (resultSet.getInt("moves") <= 290 && resultSet.getInt("score")>125)
+					if (resultSet.getInt("score")>myScore)
+						id_class.put(resultSet.getInt("UserID"), resultSet.getInt("score"));
+			break;
+			case 1:
+				if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>436)
 				if (resultSet.getInt("score")>myScore)
-					rank++;
+					id_class.put(resultSet.getInt("UserID"), resultSet.getInt("score"));
+			break;
+			case 3:
+				if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>713)
+					if (resultSet.getInt("score")>myScore)
+						id_class.put(resultSet.getInt("UserID"), resultSet.getInt("score"));
+			case 5:
+				if (resultSet.getInt("moves") <= 500 && resultSet.getInt("score")>570)
+					if (resultSet.getInt("score")>myScore)
+						id_class.put(resultSet.getInt("UserID"), resultSet.getInt("score"));
+				break;
+			case 9:
+				if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>480)
+					if (resultSet.getInt("score")>myScore)
+						id_class.put(resultSet.getInt("UserID"), resultSet.getInt("score"));
+				break;
+			case 11:
+				if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>1050)
+					if (resultSet.getInt("score")>myScore)
+						id_class.put(resultSet.getInt("UserID"), resultSet.getInt("score"));
+				break;
+			case 13:
+				if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>310)
+					if (resultSet.getInt("score")>myScore)
+						id_class.put(resultSet.getInt("UserID"), resultSet.getInt("score"));
+				break;
+			case 16:
+				if (resultSet.getInt("moves") <= 290 && resultSet.getInt("score")>235)
+					if (resultSet.getInt("score")>myScore)
+						id_class.put(resultSet.getInt("UserID"), resultSet.getInt("score"));
+				break;
+			case 19:
+				if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>250)
+					if (resultSet.getInt("score")>myScore)
+						id_class.put(resultSet.getInt("UserID"), resultSet.getInt("score"));
+				break;
+			case 20:
+				if (resultSet.getInt("moves") <= 290 && resultSet.getInt("score")>200)
+					if (resultSet.getInt("score")>myScore)
+						id_class.put(resultSet.getInt("UserID"), resultSet.getInt("score"));
+				break;
+			case 23:
+				if (resultSet.getInt("moves") <= 1140 && resultSet.getInt("score")>1000)
+					if (resultSet.getInt("score")>myScore)
+						id_class.put(resultSet.getInt("UserID"), resultSet.getInt("score"));
+				break;
+
+		}
 		}
 		}
 			resultSet.close();
 			statement.close();
 			connection.close();
-		} catch (SQLException sqle) {
+		 
+		}
+			catch (SQLException sqle) {
 			System.out.println("SQLException: " + sqle.getMessage());
 			System.out.println("Vendor Error: " + sqle.getErrorCode());
 		
@@ -2108,9 +2211,13 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-			return rank;
+			return id_class.size()+1;
 	}
-	public int GetLevelScore (int level)   {
+	
+	
+	
+	public int GetBestScore (int level)   
+	{
 //		int [] levels = new int [11]; //{0,1,3,5,9,11,13,16,19,20,23}
 		int max=0;
 		try {
@@ -2127,15 +2234,71 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		while (resultSet.next()) {
 			//System.out.println("id user:"+resultSet.getInt("UserID")+" "+"level="+resultSet.getInt("levelID")+" score:"+resultSet.getInt("score"));
 //		int score =resultSet.getInt("score") ; 
-			if (resultSet.getInt("UserID") == 205464712 || resultSet.getInt("UserID") == 205464712) {
+			if (resultSet.getInt("UserID") == g.GetId() || resultSet.getInt("UserID") == 203965884) {
 //				int scanrio = resultSet.getInt("levelID") ;
 //				int score =resultSet.getInt("score") ; 
-				if (resultSet.getInt("levelID") == level)
-				if (resultSet.getInt("score")>max)
-					max = resultSet.getInt("score");
+				if (resultSet.getInt("levelID") == level) {
+					switch (level) {
+					
+					case 0:
+						if (resultSet.getInt("moves") <= 290 && resultSet.getInt("score")>125)
+							if (resultSet.getInt("score")>max)
+								max = resultSet.getInt("score");	
+					break;
+					case 1:
+						if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>436)
+							if (resultSet.getInt("score")>max)
+								max = resultSet.getInt("score");	
+					break;
+					case 3:
+						if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>713)
+							if (resultSet.getInt("score")>max)
+								max = resultSet.getInt("score");	
+					case 5:
+						if (resultSet.getInt("moves") <= 500 && resultSet.getInt("score")>570)
+							if (resultSet.getInt("score")>max)
+								max = resultSet.getInt("score");	
+						break;
+					case 9:
+						if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>480)
+							if (resultSet.getInt("score")>max)
+								max = resultSet.getInt("score");	
+						break;
+					case 11:
+						if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>1050)
+							if (resultSet.getInt("score")>max)
+								max = resultSet.getInt("score");	
+						break;
+					case 13:
+						if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>310)
+							if (resultSet.getInt("score")>max)
+								max = resultSet.getInt("score");	
+						break;
+					case 16:
+						if (resultSet.getInt("moves") <= 290 && resultSet.getInt("score")>235)
+							if (resultSet.getInt("score")>max)
+								max = resultSet.getInt("score");	
+						break;
+					case 19:
+						if (resultSet.getInt("moves") <= 580 && resultSet.getInt("score")>250)
+							if (resultSet.getInt("score")>max)
+								max = resultSet.getInt("score");	
+						break;
+					case 20:
+						if (resultSet.getInt("moves") <= 290 && resultSet.getInt("score")>200)
+							if (resultSet.getInt("score")>max)
+								max = resultSet.getInt("score");	
+						break;
+					case 23:
+						if (resultSet.getInt("moves") <= 1140 && resultSet.getInt("score")>1000)
+							if (resultSet.getInt("score")>max)
+								max = resultSet.getInt("score");	
+						break;	
+				}
+	
 			}
 		}
-		
+		}
 		resultSet.close();
 		statement.close();
 		connection.close();
@@ -2149,62 +2312,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 		
 		
-//				if (scanrio == 0&&resultSet.getInt("moves") <= 290
-//						&& score >= 145){
-//				
-//				
-//					if (levels[0] < score)
-//					levels[0] = score;
-//			
-//	}
+
 	return max;		
 	}
-	
-	public int GetBestScore ()   {
-		int bestScore=0;	
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection connection = DriverManager.getConnection(SimpleDB.jdbcUrl, SimpleDB.jdbcUser,
-					SimpleDB.jdbcUserPassword);
-			Statement statement = connection.createStatement();
-			String allCustomersQuery = "SELECT * FROM Logs;";
-			ResultSet resultSet = statement.executeQuery(allCustomersQuery);
-//		int [] levels = new int [11]; //{0,1,3,5,9,11,13,16,19,20,23}
-//		while (resultSet.next()) {
-//			
-//		int score =resultSet.getInt("score") ; 
-//			if (resultSet.getInt("UserID") == id_meir || resultSet.getInt("UserID") == id_Ginton) {
-//				int scanrio = resultSet.getInt("levelID") ;
-//				if (scanrio == 0&&resultSet.getInt("moves") <= 290
-//						&& score >= 145){
-//				
-//				
-//					if (levels[0] < score)
-//					levels[0] = score;
-//			
-//	}
-		while (resultSet.next()) {
-			int score =resultSet.getInt("score") ; 
-			if (resultSet.getInt("UserID") == 205464712 || resultSet.getInt("UserID") == 205464712) 
-				if (score>bestScore) {
-					bestScore = score;
-				
-			}
-		}
-		resultSet.close();
-		statement.close();
-		connection.close();
-	} catch (SQLException sqle) {
-		System.out.println("SQLException: " + sqle.getMessage());
-		System.out.println("Vendor Error: " + sqle.getErrorCode());
-	
-	} 
-	catch (ClassNotFoundException e) {
-		e.printStackTrace();
-	}
-				return bestScore;
-}
-	
 	
 	
 	

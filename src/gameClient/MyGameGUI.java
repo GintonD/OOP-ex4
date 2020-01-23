@@ -424,6 +424,8 @@ public class MyGameGUI implements ActionListener, Serializable
 				this.kml.CreatFile(""+scenario_num);
 				String kmlFile =  kmlStr(""+scenario_num);
 				game.sendKML(kmlFile);
+				
+				
 				}
 				}
 			
@@ -444,7 +446,7 @@ public class MyGameGUI implements ActionListener, Serializable
 	{
 		String st=""; 
 		try {
-			File file = new File("C:\\Users\\USER\\eclipse-workspace\\Ex4\\" + string + ".kml");
+			File file = new File(/*C:\\Users\\USER\\eclipse-workspace\\Ex4\\" +*/ string + ".kml");
 			BufferedReader br = new BufferedReader(new FileReader(file)); 
 
 			String str;
@@ -674,6 +676,7 @@ public class MyGameGUI implements ActionListener, Serializable
 				this.kml.CreatFile(""+scenario_num);
 				String kmlFile =  kmlStr(""+scenario_num);
 				game.sendKML(kmlFile);
+				
 				}
 			}
 
@@ -828,6 +831,14 @@ public class MyGameGUI implements ActionListener, Serializable
 	{
 		this.MouseX = x;
 		this.MouseY = y;
+	}
+	/**
+	 * Get the id of the current user
+	 * @return
+	 */
+	public int GetId()
+	{
+		return this.id;
 	}
 	
 	
